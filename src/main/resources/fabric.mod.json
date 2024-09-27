@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "id": "simpleupdatechecker",
+  "version": "${version}",
+  "name": "Simple Update Checker",
+  "description": "Simple modpack update checker for Modrinth. Works client side and server side.",
+  "authors": [
+    "Patbox"
+  ],
+  "contact": {
+    "homepage": "https://pb4.eu",
+    "sources": "https://github.com/Patbox/simple-update-checker"
+  },
+  "license": "LGPLv3",
+  "environment": "*",
+  "icon": "assets/simpleupdatechecker/icon.png",
+  "entrypoints": {
+    "main": [
+      "eu.pb4.simpleupdatechecker.ModInit"
+    ],
+    "server": [
+      "eu.pb4.simpleupdatechecker.ModInit"
+    ],
+    "client": [
+      "eu.pb4.simpleupdatechecker.ModInit"
+    ]
+  },
+  "mixins": [
+    "simpleupdatechecker.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=0.15.0",
+    "fabric-api": "*",
+    "minecraft": ">=1.21"
+  }
+}

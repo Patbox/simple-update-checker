@@ -1,0 +1,10 @@
+{
+  "text.simpleupdatechecker.update_available_client": "Aktualizacja %s jest dostępna!",
+  "text.simpleupdatechecker.update_available.title": "Aktualizacja paczki modów jest dostępna!",
+  "text.simpleupdatechecker.update_available.version": "Aktualna wersja %s, najnowsza %s.",
+  "text.simpleupdatechecker.update_available.download": "Pobierz tutaj: %s",
+  "text.simpleupdatechecker.no_updates.latest": "Brak dostępnych aktualizacji, używasz najnowszej wersji!",
+  "text.simpleupdatechecker.no_updates.error": "Nie udało się znaleźć dostępnych wersji!",
+  "text.simpleupdatechecker.command.setting.current": "Bieżąca wartość '%s' to '%s'",
+  "text.simpleupdatechecker.command.setting.changed": "Zmieniono wartość '%s' na '%s'"
+}

@@ -1,0 +1,10 @@
+{
+  "text.simpleupdatechecker.update_available_client": "Update %s available!",
+  "text.simpleupdatechecker.update_available.title": "Modpack update available!",
+  "text.simpleupdatechecker.update_available.version": "Current version %s, latest %s.",
+  "text.simpleupdatechecker.update_available.download": "Download it here: %s",
+  "text.simpleupdatechecker.no_updates.latest": "No updates available, you are running latest version!",
+  "text.simpleupdatechecker.no_updates.error": "Failed to receive available versions!",
+  "text.simpleupdatechecker.command.setting.current": "Current value of '%s' is '%s'",
+  "text.simpleupdatechecker.command.setting.changed": "Changed value of '%s' to '%s'"
+}
