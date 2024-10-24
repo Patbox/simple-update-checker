@@ -64,6 +64,7 @@ public class TitleScreenMixin extends Screen {
 
         updateAvailableWidget = new PressableTextWidget(0, this.height - 20, this.textRenderer.getWidth(text), 10, text,
                 button -> ConfirmLinkScreen.open(this, previousVersion.url(), true), this.textRenderer);
+        updateAvailableWidget.visible = false;
         this.addDrawableChild(updateAvailableWidget);
     }
 
@@ -74,6 +75,8 @@ public class TitleScreenMixin extends Screen {
             var modpackText = ModpackConfig.get().getFullName();
             if (updateAvailableWidget != null) {
                 updateAvailableWidget.setX(textRenderer.getWidth(modpackText + " ") + x);
+                updateAvailableWidget.setY(y - 10);
+                updateAvailableWidget.visible = true;
             }
             instance.drawTextWithShadow(textRenderer, modpackText, x, y - 10, color);
         }
