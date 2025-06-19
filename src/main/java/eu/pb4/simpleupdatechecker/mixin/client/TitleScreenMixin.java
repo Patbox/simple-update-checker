@@ -10,11 +10,9 @@ import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.ConfirmLinkScreen;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.TitleScreen;
-import net.minecraft.client.gui.screen.option.CreditsAndAttributionScreen;
 import net.minecraft.client.gui.widget.PressableTextWidget;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
-import net.minecraft.text.Texts;
 import net.minecraft.util.Formatting;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
@@ -68,8 +66,8 @@ public class TitleScreenMixin extends Screen {
         this.addDrawableChild(updateAvailableWidget);
     }
 
-    @WrapOperation(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/DrawContext;drawTextWithShadow(Lnet/minecraft/client/font/TextRenderer;Ljava/lang/String;III)I"))
-    private int renderModpackVersion(DrawContext instance, TextRenderer textRenderer, String text, int x, int y, int color, Operation<Integer> original) {
+    @WrapOperation(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/DrawContext;drawTextWithShadow(Lnet/minecraft/client/font/TextRenderer;Ljava/lang/String;III)V"))
+    private void renderModpackVersion(DrawContext instance, TextRenderer textRenderer, String text, int x, int y, int color, Operation<Integer> original) {
         if (!UserConfig.get().disableMainMenu) {
             this.updateVersionButton();
             var modpackText = ModpackConfig.get().getFullName();
@@ -80,6 +78,6 @@ public class TitleScreenMixin extends Screen {
             }
             instance.drawTextWithShadow(textRenderer, modpackText, x, y - 10, color);
         }
-        return original.call(instance, textRenderer, text, x, y, color);
+        original.call(instance, textRenderer, text, x, y, color);
     }
 }

@@ -23,6 +23,7 @@ import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.net.URI;
 import java.time.Duration;
 import java.util.Objects;
 import java.util.function.Consumer;
@@ -96,7 +97,7 @@ public class ModInit implements ModInitializer, DedicatedServerModInitializer, C
             textConsumer.accept(Text.translatable("text.simpleupdatechecker.update_available.download",
                     Text.literal(updateVersion.url)
                             .setStyle(Style.EMPTY.withColor(Formatting.BLUE).withUnderline(true)
-                                    .withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, updateVersion.url()))
+                                    .withClickEvent(new ClickEvent.OpenUrl(URI.create(updateVersion.url())))
                             )
             ).formatted(Formatting.GRAY));
         } else if (sentNoUpdates) {
