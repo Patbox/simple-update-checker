@@ -1,0 +1,10 @@
+{
+  "text.simpleupdatechecker.update_available_client": "Доступне оновлення %s!",
+  "text.simpleupdatechecker.update_available.title": "Доступне оновлення пакета модів!",
+  "text.simpleupdatechecker.update_available.version": "Поточна версія %s, остання %s.",
+  "text.simpleupdatechecker.update_available.download": "Завантажити тут: %s",
+  "text.simpleupdatechecker.no_updates.latest": "Немає доступних оновлень, Ви використовуєте останню версію!",
+  "text.simpleupdatechecker.no_updates.error": "Не вдалося отримати доступні версії!",
+  "text.simpleupdatechecker.command.setting.current": "Поточне значення «%s» є «%s»",
+  "text.simpleupdatechecker.command.setting.changed": "Змінено значення «%s» на «%s»"
+}

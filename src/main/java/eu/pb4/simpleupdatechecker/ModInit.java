@@ -47,7 +47,7 @@ public class ModInit implements ModInitializer, DedicatedServerModInitializer, C
     private static void registerCommands(CommandDispatcher<ServerCommandSource> dispatcher, CommandRegistryAccess access, CommandManager.RegistrationEnvironment env) {
         dispatcher.register(
                 literal("simpleupdatechecker")
-                        .requires(x -> x.hasPermissionLevel(4) || (x.isExecutedByPlayer() && x.getServer().isHost(Objects.requireNonNull(x.getPlayer()).getGameProfile())))
+                        .requires(x -> x.hasPermissionLevel(4) || (x.isExecutedByPlayer() && x.getServer().isHost(Objects.requireNonNull(x.getPlayer()).getPlayerConfigEntry())))
                         .then(literal("check").executes(x -> {
                             checkUpdates(() -> sentTextUpdate(x.getSource()::sendMessage, true));
                             return 0;

@@ -1,1 +1,10 @@
-{}
+{
+  "text.simpleupdatechecker.update_available_client": "Есть обновление %s!",
+  "text.simpleupdatechecker.update_available.title": "Есть обновление Сборки Модов, Мод пака!",
+  "text.simpleupdatechecker.update_available.version": "Установленная версия %s, последняя %s.",
+  "text.simpleupdatechecker.update_available.download": "Скачайте здесь: %s",
+  "text.simpleupdatechecker.no_updates.latest": "Нет обновлений, у вас последняя версия!",
+  "text.simpleupdatechecker.no_updates.error": "Ошибка получения доступных версий!",
+  "text.simpleupdatechecker.command.setting.current": "Текущее значение '%s' = '%s'",
+  "text.simpleupdatechecker.command.setting.changed": "Поменяли значение '%s' = '%s'"
+}

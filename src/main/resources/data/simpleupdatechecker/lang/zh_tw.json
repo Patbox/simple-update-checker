@@ -1,1 +1,10 @@
-{}
+{
+  "text.simpleupdatechecker.update_available_client": "%s 更新可用！",
+  "text.simpleupdatechecker.update_available.title": "模組包更新可用！",
+  "text.simpleupdatechecker.update_available.version": "目前版本 %s，最新版本 %s。",
+  "text.simpleupdatechecker.update_available.download": "下載連結：%s",
+  "text.simpleupdatechecker.no_updates.latest": "沒有可用的更新，你正在執行最新版本！",
+  "text.simpleupdatechecker.no_updates.error": "無法取得可用版本！",
+  "text.simpleupdatechecker.command.setting.current": "「%s」的目前值為「%s」",
+  "text.simpleupdatechecker.command.setting.changed": "已將「%s」的值變更為「%s」"
+}

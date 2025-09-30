@@ -1,1 +1,10 @@
-{}
+{
+  "text.simpleupdatechecker.update_available_client": "有可用的版本%s更新！",
+  "text.simpleupdatechecker.update_available.title": "有可用的模组包更新！",
+  "text.simpleupdatechecker.update_available.version": "当前版本 %s，最新版本 %s。",
+  "text.simpleupdatechecker.update_available.download": "在这里下载: %s",
+  "text.simpleupdatechecker.no_updates.latest": "没有可用的更新，您正在运行最新版本！",
+  "text.simpleupdatechecker.no_updates.error": "获取可用版本失败！",
+  "text.simpleupdatechecker.command.setting.current": "'%s'的当前值为'%s'",
+  "text.simpleupdatechecker.command.setting.changed": "'%s'的值更改为'%s'"
+}
