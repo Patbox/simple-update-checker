@@ -2,10 +2,9 @@ package eu.pb4.simpleupdatechecker;
 
 import eu.pb4.placeholders.api.PlaceholderResult;
 import eu.pb4.placeholders.api.Placeholders;
-import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
-
 import java.util.function.Supplier;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
 
 public class PlaceholderSupport {
     public static void register() {
@@ -22,6 +21,6 @@ public class PlaceholderSupport {
     }
 
     private static void register(String path, Supplier<String> supplier) {
-        Placeholders.register(Identifier.of("simpleupdatechecker", path), (ctx, arg) -> PlaceholderResult.value(Text.literal(supplier.get())));
+        Placeholders.register(Identifier.fromNamespaceAndPath("simpleupdatechecker", path), (ctx, arg) -> PlaceholderResult.value(Component.literal(supplier.get())));
     }
 }

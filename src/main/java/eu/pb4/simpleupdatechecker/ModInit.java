@@ -11,13 +11,13 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.command.CommandRegistryAccess;
-import net.minecraft.server.command.CommandManager;
-import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.text.ClickEvent;
-import net.minecraft.text.Style;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
+import net.minecraft.ChatFormatting;
+import net.minecraft.commands.CommandBuildContext;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
+import net.minecraft.network.chat.ClickEvent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.Style;
 import net.minecraft.util.Util;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
@@ -28,8 +28,8 @@ import java.time.Duration;
 import java.util.Objects;
 import java.util.function.Consumer;
 
-import static net.minecraft.server.command.CommandManager.argument;
-import static net.minecraft.server.command.CommandManager.literal;
+import static net.minecraft.commands.Commands.argument;
+import static net.minecraft.commands.Commands.literal;
 
 public class ModInit implements ModInitializer, DedicatedServerModInitializer, ClientModInitializer {
     public static final Logger LOGGER = LoggerFactory.getLogger("Simple Update Checker");
@@ -44,12 +44,12 @@ public class ModInit implements ModInitializer, DedicatedServerModInitializer, C
     public static long tick;
     private static long serverRecheckTimeout = INITIAL_SERVER_RECHECK_TIMEOUT;
 
-    private static void registerCommands(CommandDispatcher<ServerCommandSource> dispatcher, CommandRegistryAccess access, CommandManager.RegistrationEnvironment env) {
+    private static void registerCommands(CommandDispatcher<CommandSourceStack> dispatcher, CommandBuildContext access, Commands.CommandSelection env) {
         dispatcher.register(
                 literal("simpleupdatechecker")
-                        .requires(x -> x.hasPermissionLevel(4) || (x.isExecutedByPlayer() && x.getServer().isHost(Objects.requireNonNull(x.getPlayer()).getPlayerConfigEntry())))
+                        .requires(Util.anyOf(Commands.hasPermission(Commands.LEVEL_ADMINS), x -> (x.isPlayer() && x.getServer().isSingleplayerOwner(Objects.requireNonNull(x.getPlayer()).nameAndId()))))
                         .then(literal("check").executes(x -> {
-                            checkUpdates(() -> sentTextUpdate(x.getSource()::sendMessage, true));
+                            checkUpdates(() -> sentTextUpdate(x.getSource()::sendSystemMessage, true));
                             return 0;
                         }))
                         .then(literal("reload").executes(x -> {
@@ -63,12 +63,12 @@ public class ModInit implements ModInitializer, DedicatedServerModInitializer, C
                             for (var field : UserConfig.getToggles()) {
                                 l.then(literal(field.name())
                                         .executes(x -> {
-                                            x.getSource().sendMessage(Text.translatable("text.simpleupdatechecker.command.setting.current", field.name(), String.valueOf(field.get().get())));
+                                            x.getSource().sendSystemMessage(Component.translatable("text.simpleupdatechecker.command.setting.current", field.name(), String.valueOf(field.get().get())));
                                             return field.get().get() ? 1 : 0;
                                         }).then(argument("value", BoolArgumentType.bool()).executes((x) -> {
                                             var arg = BoolArgumentType.getBool(x, "value");
                                             field.set().accept(arg);
-                                            x.getSource().sendMessage(Text.translatable("text.simpleupdatechecker.command.setting.changed", field.name(), String.valueOf(arg)));
+                                            x.getSource().sendSystemMessage(Component.translatable("text.simpleupdatechecker.command.setting.changed", field.name(), String.valueOf(arg)));
                                             return arg ? 1 : 0;
                                         })));
                             }
@@ -85,26 +85,26 @@ public class ModInit implements ModInitializer, DedicatedServerModInitializer, C
         }
     }
 
-    public static void sentTextUpdate(Consumer<Text> textConsumer, boolean sentNoUpdates) {
+    public static void sentTextUpdate(Consumer<Component> textConsumer, boolean sentNoUpdates) {
         if (updateVersion != null) {
-            textConsumer.accept(Text.empty()
-                    .append(Text.translatable("text.simpleupdatechecker.update_available.title").formatted(Formatting.GOLD))
+            textConsumer.accept(Component.empty()
+                    .append(Component.translatable("text.simpleupdatechecker.update_available.title").withStyle(ChatFormatting.GOLD))
                     .append(" ")
-                    .append(Text.translatable("text.simpleupdatechecker.update_available.version",
-                            Text.literal(ModpackConfig.get().getDisplayVersion()).formatted(Formatting.WHITE),
-                            Text.literal(updateVersion.displayVersion()).formatted(Formatting.WHITE)
-                    ).formatted(Formatting.YELLOW)));
-            textConsumer.accept(Text.translatable("text.simpleupdatechecker.update_available.download",
-                    Text.literal(updateVersion.url)
-                            .setStyle(Style.EMPTY.withColor(Formatting.BLUE).withUnderline(true)
+                    .append(Component.translatable("text.simpleupdatechecker.update_available.version",
+                            Component.literal(ModpackConfig.get().getDisplayVersion()).withStyle(ChatFormatting.WHITE),
+                            Component.literal(updateVersion.displayVersion()).withStyle(ChatFormatting.WHITE)
+                    ).withStyle(ChatFormatting.YELLOW)));
+            textConsumer.accept(Component.translatable("text.simpleupdatechecker.update_available.download",
+                    Component.literal(updateVersion.url)
+                            .setStyle(Style.EMPTY.withColor(ChatFormatting.BLUE).withUnderlined(true)
                                     .withClickEvent(new ClickEvent.OpenUrl(URI.create(updateVersion.url())))
                             )
-            ).formatted(Formatting.GRAY));
+            ).withStyle(ChatFormatting.GRAY));
         } else if (sentNoUpdates) {
             if (noVersionsAvailable) {
-                textConsumer.accept(Text.translatable("text.simpleupdatechecker.no_updates.error").formatted(Formatting.RED));
+                textConsumer.accept(Component.translatable("text.simpleupdatechecker.no_updates.error").withStyle(ChatFormatting.RED));
             } else {
-                textConsumer.accept(Text.translatable("text.simpleupdatechecker.no_updates.latest").formatted(Formatting.GREEN));
+                textConsumer.accept(Component.translatable("text.simpleupdatechecker.no_updates.latest").withStyle(ChatFormatting.GREEN));
             }
         }
     }
@@ -189,8 +189,8 @@ public class ModInit implements ModInitializer, DedicatedServerModInitializer, C
         });
 
         ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
-            if (handler.player.hasPermissionLevel(4) && !UserConfig.get().disableJoinOps) {
-                sentTextUpdate(handler.player::sendMessage, false);
+            if (Commands.LEVEL_ADMINS.check(handler.player.permissions()) && !UserConfig.get().disableJoinOps) {
+                sentTextUpdate(handler.player::sendSystemMessage, false);
             }
         });
     }

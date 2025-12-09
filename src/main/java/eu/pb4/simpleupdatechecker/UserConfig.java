@@ -1,14 +1,12 @@
 package eu.pb4.simpleupdatechecker;
 
 import com.google.gson.annotations.SerializedName;
-import net.minecraft.text.Text;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-import static net.minecraft.server.command.CommandManager.literal;
+import static net.minecraft.commands.Commands.literal;
 
 public class UserConfig {
     private static UserConfig instance;

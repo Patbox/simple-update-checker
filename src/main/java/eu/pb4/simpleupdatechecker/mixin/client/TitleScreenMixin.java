@@ -5,15 +5,6 @@ import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import eu.pb4.simpleupdatechecker.ModInit;
 import eu.pb4.simpleupdatechecker.ModpackConfig;
 import eu.pb4.simpleupdatechecker.UserConfig;
-import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.screen.ConfirmLinkScreen;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.screen.TitleScreen;
-import net.minecraft.client.gui.widget.PressableTextWidget;
-import net.minecraft.text.Style;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -21,15 +12,24 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.Objects;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.PlainTextButton;
+import net.minecraft.client.gui.screens.ConfirmLinkScreen;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.gui.screens.TitleScreen;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.Style;
 
 @Mixin(TitleScreen.class)
 public class TitleScreenMixin extends Screen {
     @Unique
-    private PressableTextWidget updateAvailableWidget = null;
+    private PlainTextButton updateAvailableWidget = null;
     @Unique
     private ModInit.Version previousVersion = ModInit.updateVersion;
 
-    protected TitleScreenMixin(Text title) {
+    protected TitleScreenMixin(Component title) {
         super(title);
     }
 
@@ -46,37 +46,37 @@ public class TitleScreenMixin extends Screen {
         if (updateAvailableWidget != null && Objects.equals(ModInit.updateVersion, previousVersion)) {
             return;
         } else if (updateAvailableWidget != null) {
-            this.remove(updateAvailableWidget);
+            this.removeWidget(updateAvailableWidget);
         }
         this.previousVersion = ModInit.updateVersion;
         if (this.previousVersion == null || UserConfig.get().disableMainMenu) {
             return;
         }
 
-        var text = Text.empty()
-                .append(Text.literal("[").setStyle(Style.EMPTY.withColor(Formatting.GRAY).withUnderline(false)))
-                .append(Text.translatable("text.simpleupdatechecker.update_available_client", previousVersion.displayVersion())
-                                .setStyle(Style.EMPTY.withColor(Formatting.YELLOW)))
-                .append(Text.literal("]").setStyle(Style.EMPTY.withColor(Formatting.GRAY).withUnderline(false)))
+        var text = Component.empty()
+                .append(Component.literal("[").setStyle(Style.EMPTY.withColor(ChatFormatting.GRAY).withUnderlined(false)))
+                .append(Component.translatable("text.simpleupdatechecker.update_available_client", previousVersion.displayVersion())
+                                .setStyle(Style.EMPTY.withColor(ChatFormatting.YELLOW)))
+                .append(Component.literal("]").setStyle(Style.EMPTY.withColor(ChatFormatting.GRAY).withUnderlined(false)))
                 ;
 
-        updateAvailableWidget = new PressableTextWidget(0, this.height - 20, this.textRenderer.getWidth(text), 10, text,
-                button -> ConfirmLinkScreen.open(this, previousVersion.url(), true), this.textRenderer);
+        updateAvailableWidget = new PlainTextButton(0, this.height - 20, this.font.width(text), 10, text,
+                button -> ConfirmLinkScreen.confirmLinkNow(this, previousVersion.url(), true), this.font);
         updateAvailableWidget.visible = false;
-        this.addDrawableChild(updateAvailableWidget);
+        this.addRenderableWidget(updateAvailableWidget);
     }
 
-    @WrapOperation(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/DrawContext;drawTextWithShadow(Lnet/minecraft/client/font/TextRenderer;Ljava/lang/String;III)V"))
-    private void renderModpackVersion(DrawContext instance, TextRenderer textRenderer, String text, int x, int y, int color, Operation<Integer> original) {
+    @WrapOperation(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphics;drawString(Lnet/minecraft/client/gui/Font;Ljava/lang/String;III)V"))
+    private void renderModpackVersion(GuiGraphics instance, Font textRenderer, String text, int x, int y, int color, Operation<Integer> original) {
         if (!UserConfig.get().disableMainMenu) {
             this.updateVersionButton();
             var modpackText = ModpackConfig.get().getFullName();
             if (updateAvailableWidget != null) {
-                updateAvailableWidget.setX(textRenderer.getWidth(modpackText + " ") + x);
+                updateAvailableWidget.setX(textRenderer.width(modpackText + " ") + x);
                 updateAvailableWidget.setY(y - 10);
                 updateAvailableWidget.visible = true;
             }
-            instance.drawTextWithShadow(textRenderer, modpackText, x, y - 10, color);
+            instance.drawString(textRenderer, modpackText, x, y - 10, color);
         }
         original.call(instance, textRenderer, text, x, y, color);
     }
