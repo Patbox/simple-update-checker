@@ -21,6 +21,6 @@ public class PlaceholderSupport {
     }
 
     private static void register(String path, Supplier<String> supplier) {
-        Placeholders.register(Identifier.fromNamespaceAndPath("simpleupdatechecker", path), (ctx, arg) -> PlaceholderResult.value(Component.literal(supplier.get())));
+        Placeholders.registerServer(Identifier.fromNamespaceAndPath("simpleupdatechecker", path), (ctx, arg) -> PlaceholderResult.value(Component.literal(supplier.get())));
     }
 }

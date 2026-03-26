@@ -14,7 +14,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import java.util.Objects;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.PlainTextButton;
 import net.minecraft.client.gui.screens.ConfirmLinkScreen;
 import net.minecraft.client.gui.screens.Screen;
@@ -66,8 +66,8 @@ public class TitleScreenMixin extends Screen {
         this.addRenderableWidget(updateAvailableWidget);
     }
 
-    @WrapOperation(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphics;drawString(Lnet/minecraft/client/gui/Font;Ljava/lang/String;III)V"))
-    private void renderModpackVersion(GuiGraphics instance, Font textRenderer, String text, int x, int y, int color, Operation<Integer> original) {
+    @WrapOperation(method = "extractRenderState", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphicsExtractor;text(Lnet/minecraft/client/gui/Font;Ljava/lang/String;III)V"))
+    private void renderModpackVersion(GuiGraphicsExtractor instance, Font textRenderer, String text, int x, int y, int color, Operation<Integer> original) {
         if (!UserConfig.get().disableMainMenu) {
             this.updateVersionButton();
             var modpackText = ModpackConfig.get().getFullName();
@@ -76,7 +76,7 @@ public class TitleScreenMixin extends Screen {
                 updateAvailableWidget.setY(y - 10);
                 updateAvailableWidget.visible = true;
             }
-            instance.drawString(textRenderer, modpackText, x, y - 10, color);
+            instance.text(textRenderer, modpackText, x, y - 10, color);
         }
         original.call(instance, textRenderer, text, x, y, color);
     }
